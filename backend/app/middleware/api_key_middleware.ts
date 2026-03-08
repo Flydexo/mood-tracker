@@ -13,6 +13,8 @@ export default class ApiKeyMiddleware {
     const providedKey = authHeader.slice(7)
     const validKey = env.get('API_KEY')
 
+    console.log('[api-key-middleware] Provided:', providedKey, '| Valid:', validKey)
+
     if (providedKey !== validKey) {
       return response.unauthorized({ error: 'Invalid API key' })
     }

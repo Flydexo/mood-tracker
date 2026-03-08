@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { fetchSummary, fetchHourly, fetchDomainStats } from '../lib/api.js'
 import { getConfig } from '../lib/db.js'
 
@@ -8,9 +8,12 @@ export function useStats(from, to, period) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [hasServer, setHasServer] = useState(false)
+  const loadedRef = useRef(false)
 
   const reload = useCallback(async () => {
     if (!from || !to) return
+    if (loadedRef.current && loading) return // Prevent duplicate fetches
+    
     setLoading(true)
     setError(null)
 
@@ -29,16 +32,19 @@ export function useStats(from, to, period) {
 
       setSummary(sum)
       setHourly(hrs)
+      loadedRef.current = true
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
-  }, [from, to, period])
+  }, [from, to, period, loading])
 
   useEffect(() => {
-    reload()
-  }, [reload])
+    if (!loadedRef.current) {
+      reload()
+    }
+  }, []) // Only run once on mount
 
   return { summary, hourly, loading, error, hasServer, reload }
 }

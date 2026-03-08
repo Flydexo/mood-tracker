@@ -15,11 +15,13 @@ let _db = null
 
 export async function openDB() {
   if (_db) return _db
+  console.log('[mood-tracker] Opening IndexedDB:', DB_NAME, 'v', DB_VERSION)
 
   _db = await new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION)
 
     req.onupgradeneeded = (e) => {
+      console.log('[mood-tracker] IndexedDB upgrade needed')
       const db = e.target.result
 
       if (!db.objectStoreNames.contains('moodLogs')) {
@@ -48,8 +50,14 @@ export async function openDB() {
       }
     }
 
-    req.onsuccess = () => resolve(req.result)
-    req.onerror = () => reject(req.error)
+    req.onsuccess = () => {
+      console.log('[mood-tracker] IndexedDB opened successfully')
+      resolve(req.result)
+    }
+    req.onerror = (e) => {
+      console.error('[mood-tracker] IndexedDB open error:', e.target.error?.message || e.target.error)
+      reject(req.error)
+    }
   })
 
   return _db
@@ -102,7 +110,7 @@ export async function getUnsyncedMoodLogs(limit = 50) {
   const index = store.index('synced')
   const results = []
   await new Promise((resolve, reject) => {
-    const req = index.openCursor(IDBKeyRange.only(false))
+    const req = index.openCursor(IDBKeyRange.only(0)) // 0 = unsynced
     req.onsuccess = (e) => {
       const cursor = e.target.result
       if (!cursor || results.length >= limit) return resolve()
@@ -121,7 +129,7 @@ export async function markMoodLogsSynced(clientIds) {
   for (const id of clientIds) {
     const record = await reqPromise(store.get(id))
     if (record) {
-      record.synced = true
+      record.synced = 1
       store.put(record)
     }
   }
@@ -151,9 +159,14 @@ export async function getMoodLogs(from, to) {
 // ─── Website Visits ───────────────────────────────────────────────────────────
 
 export async function saveWebsiteVisit(visit) {
-  const db = await openDB()
-  const tx = db.transaction('websiteVisits', 'readwrite')
-  await reqPromise(tx.objectStore('websiteVisits').put(visit))
+  try {
+    const db = await openDB()
+    const tx = db.transaction('websiteVisits', 'readwrite')
+    await reqPromise(tx.objectStore('websiteVisits').put(visit))
+  } catch (err) {
+    console.error('[mood-tracker] saveWebsiteVisit error:', err?.message || err, '| name:', err?.name, '| visit:', visit)
+    throw err
+  }
 }
 
 export async function getUnsyncedWebsiteVisits(limit = 50) {
@@ -163,7 +176,7 @@ export async function getUnsyncedWebsiteVisits(limit = 50) {
   const index = store.index('synced')
   const results = []
   await new Promise((resolve, reject) => {
-    const req = index.openCursor(IDBKeyRange.only(false))
+    const req = index.openCursor(IDBKeyRange.only(0)) // 0 = unsynced
     req.onsuccess = (e) => {
       const cursor = e.target.result
       if (!cursor || results.length >= limit) return resolve()
@@ -182,7 +195,7 @@ export async function markWebsiteVisitsSynced(clientIds) {
   for (const id of clientIds) {
     const record = await reqPromise(store.get(id))
     if (record) {
-      record.synced = true
+      record.synced = 1
       store.put(record)
     }
   }

@@ -1,0 +1,11 @@
+# Local development overrides — NOT committed with secrets
+# Copy .env.docker.example to .env.docker and fill in values
+# Run with: docker compose --env-file .env.docker up
+#
+# This file is picked up automatically by docker compose alongside docker-compose.yml.
+# Override here to expose db port locally for psql / pgAdmin access.
+
+services:
+  db:
+    ports:
+      - "5432:5432"

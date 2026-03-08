@@ -110,14 +110,18 @@ export default function Settings() {
   }
 
   async function handleTest() {
+    if (!serverUrl.trim()) {
+      setTestStatus({ type: 'error', message: 'Please enter a server URL first.' })
+      return
+    }
     setTesting(true)
     setTestStatus(null)
     try {
-      const ok = await checkConnection()
+      const result = await checkConnection(serverUrl.trim())
       setTestStatus(
-        ok
+        result.ok
           ? { type: 'success', message: 'Connected successfully.' }
-          : { type: 'error', message: 'Could not connect. Check the URL and API key.' }
+          : { type: 'error', message: `Could not connect: ${result.error}` }
       )
     } finally {
       setTesting(false)

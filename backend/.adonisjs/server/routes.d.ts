@@ -4,21 +4,25 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'mood_logs.batch': { paramsTuple?: []; params?: {} }
+    'website_visits.batch': { paramsTuple?: []; params?: {} }
+    'stats.summary': { paramsTuple?: []; params?: {} }
+    'stats.hourly': { paramsTuple?: []; params?: {} }
+    'stats.domain': { paramsTuple: [ParamValue]; params: {'domain': ParamValue} }
   }
   GET: {
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'stats.summary': { paramsTuple?: []; params?: {} }
+    'stats.hourly': { paramsTuple?: []; params?: {} }
+    'stats.domain': { paramsTuple: [ParamValue]; params: {'domain': ParamValue} }
   }
   HEAD: {
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'stats.summary': { paramsTuple?: []; params?: {} }
+    'stats.hourly': { paramsTuple?: []; params?: {} }
+    'stats.domain': { paramsTuple: [ParamValue]; params: {'domain': ParamValue} }
   }
   POST: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
+    'mood_logs.batch': { paramsTuple?: []; params?: {} }
+    'website_visits.batch': { paramsTuple?: []; params?: {} }
   }
 }
 declare module '@adonisjs/core/types/http' {

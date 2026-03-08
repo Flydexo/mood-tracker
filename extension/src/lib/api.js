@@ -7,6 +7,7 @@ import { getConfig } from './db.js'
 
 async function getHeaders() {
   const apiKey = await getConfig('apiKey')
+  console.log('[mood-tracker] getHeaders, apiKey:', apiKey ? `${apiKey.slice(0,4)}...` : 'null')
   return {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${apiKey || ''}`,
@@ -91,13 +92,22 @@ export async function fetchDomainStats(domain, from, to) {
   return res.ok ? res.data : null
 }
 
-export async function checkConnection() {
-  const [baseUrl, headers] = await Promise.all([getBaseUrl(), getHeaders()])
-  if (!baseUrl) return false
+export async function checkConnection(url) {
+  let baseUrl = url || await getBaseUrl()
+  if (!baseUrl) return { ok: false, error: 'No server URL configured' }
+
+  // Ensure protocol
+  if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+    baseUrl = 'http://' + baseUrl
+  }
+  baseUrl = baseUrl.replace(/\/$/, '')
+
+  const headers = await getHeaders()
   try {
     const res = await fetch(`${baseUrl}/`, { headers, signal: AbortSignal.timeout(5000) })
-    return res.ok
-  } catch {
-    return false
+    if (res.ok) return { ok: true }
+    return { ok: false, error: `HTTP ${res.status}` }
+  } catch (err) {
+    return { ok: false, error: err.message }
   }
 }

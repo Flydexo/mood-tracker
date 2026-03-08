@@ -6,29 +6,35 @@ import type { ApiDefinition } from './tree.d.ts'
 const placeholder: any = {}
 
 const routes = {
-  'auth.new_account.store': {
+  'mood_logs.batch': {
     methods: ["POST"],
-    pattern: '/api/v1/auth/signup',
-    tokens: [{"old":"/api/v1/auth/signup","type":0,"val":"api","end":""},{"old":"/api/v1/auth/signup","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/signup","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/signup","type":0,"val":"signup","end":""}],
-    types: placeholder as Registry['auth.new_account.store']['types'],
+    pattern: '/api/mood-logs/batch',
+    tokens: [{"old":"/api/mood-logs/batch","type":0,"val":"api","end":""},{"old":"/api/mood-logs/batch","type":0,"val":"mood-logs","end":""},{"old":"/api/mood-logs/batch","type":0,"val":"batch","end":""}],
+    types: placeholder as Registry['mood_logs.batch']['types'],
   },
-  'auth.access_token.store': {
+  'website_visits.batch': {
     methods: ["POST"],
-    pattern: '/api/v1/auth/login',
-    tokens: [{"old":"/api/v1/auth/login","type":0,"val":"api","end":""},{"old":"/api/v1/auth/login","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/login","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/login","type":0,"val":"login","end":""}],
-    types: placeholder as Registry['auth.access_token.store']['types'],
+    pattern: '/api/website-visits/batch',
+    tokens: [{"old":"/api/website-visits/batch","type":0,"val":"api","end":""},{"old":"/api/website-visits/batch","type":0,"val":"website-visits","end":""},{"old":"/api/website-visits/batch","type":0,"val":"batch","end":""}],
+    types: placeholder as Registry['website_visits.batch']['types'],
   },
-  'auth.access_token.destroy': {
-    methods: ["POST"],
-    pattern: '/api/v1/auth/logout',
-    tokens: [{"old":"/api/v1/auth/logout","type":0,"val":"api","end":""},{"old":"/api/v1/auth/logout","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/logout","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/logout","type":0,"val":"logout","end":""}],
-    types: placeholder as Registry['auth.access_token.destroy']['types'],
-  },
-  'profile.profile.show': {
+  'stats.summary': {
     methods: ["GET","HEAD"],
-    pattern: '/api/v1/account/profile',
-    tokens: [{"old":"/api/v1/account/profile","type":0,"val":"api","end":""},{"old":"/api/v1/account/profile","type":0,"val":"v1","end":""},{"old":"/api/v1/account/profile","type":0,"val":"account","end":""},{"old":"/api/v1/account/profile","type":0,"val":"profile","end":""}],
-    types: placeholder as Registry['profile.profile.show']['types'],
+    pattern: '/api/stats/summary',
+    tokens: [{"old":"/api/stats/summary","type":0,"val":"api","end":""},{"old":"/api/stats/summary","type":0,"val":"stats","end":""},{"old":"/api/stats/summary","type":0,"val":"summary","end":""}],
+    types: placeholder as Registry['stats.summary']['types'],
+  },
+  'stats.hourly': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/stats/hourly',
+    tokens: [{"old":"/api/stats/hourly","type":0,"val":"api","end":""},{"old":"/api/stats/hourly","type":0,"val":"stats","end":""},{"old":"/api/stats/hourly","type":0,"val":"hourly","end":""}],
+    types: placeholder as Registry['stats.hourly']['types'],
+  },
+  'stats.domain': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/stats/domain/:domain',
+    tokens: [{"old":"/api/stats/domain/:domain","type":0,"val":"api","end":""},{"old":"/api/stats/domain/:domain","type":0,"val":"stats","end":""},{"old":"/api/stats/domain/:domain","type":0,"val":"domain","end":""},{"old":"/api/stats/domain/:domain","type":1,"val":"domain","end":""}],
+    types: placeholder as Registry['stats.domain']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

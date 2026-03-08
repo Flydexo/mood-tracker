@@ -26,5 +26,5 @@ export default await Env.create(new URL('../', import.meta.url), {
   DATABASE_URL: Env.schema.string(),
 
   // API authentication (single static key)
-  API_KEY: Env.schema.secret(),
+  API_KEY: Env.schema.string(),
 })

@@ -35,6 +35,9 @@ self.addEventListener('install', () => {
   self.skipWaiting()
 })
 
+// Open DB immediately when the service worker starts
+openDB().catch((err) => console.error('[mood-tracker] Failed to open DB:', err))
+
 self.addEventListener('activate', async (e) => {
   e.waitUntil(clients.claim())
   await openDB()
@@ -42,20 +45,28 @@ self.addEventListener('activate', async (e) => {
 })
 
 async function setupAlarms() {
+  const intervalMin = (await getConfig('moodCheckInterval')) || 30
+  console.log('[mood-tracker] setupAlarms, moodCheckInterval:', intervalMin)
+
   // Tick every 10s to measure time
   chrome.alarms.create('tick', { periodInMinutes: 1 / 6 })
 
   // Mood check interval (default 30 min)
-  const intervalMin = (await getConfig('moodCheckInterval')) || 30
   chrome.alarms.create('moodCheck', { periodInMinutes: Number(intervalMin) })
 
   // Sync every 5 minutes
   chrome.alarms.create('sync', { periodInMinutes: 5 })
+
+  // Log all alarms
+  chrome.alarms.getAll((alarms) => {
+    console.log('[mood-tracker] Active alarms:', alarms.map(a => a.name))
+  })
 }
 
 // ─── Alarms ───────────────────────────────────────────────────────────────────
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
+  console.log('[mood-tracker] Alarm fired:', alarm.name)
   if (alarm.name === 'tick') await onTick()
   if (alarm.name === 'moodCheck') await onMoodCheck()
   if (alarm.name === 'sync') await onSync()
@@ -217,7 +228,7 @@ async function flushActiveSession() {
       audioVideoDuration: session.accMedia,
       startTime: session.startTime,
       endTime: new Date().toISOString(),
-      synced: false,
+      synced: 0,
     })
 
     // Trigger sync if we've accumulated enough
@@ -239,7 +250,7 @@ async function flushMediaSession(tabId, session) {
       audioVideoDuration: session.accMedia,
       startTime: session.startTime,
       endTime: new Date().toISOString(),
-      synced: false,
+      synced: 0,
     })
   } catch (err) {
     console.error('[mood-tracker] Failed to save media session:', err)
@@ -346,7 +357,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   }
 
   if (msg.action === 'updateMoodInterval') {
-    const intervalMin = msg.data.intervalMin
+    const intervalMin = msg.interval
     setConfig('moodCheckInterval', intervalMin).then(() => {
       chrome.alarms.clear('moodCheck', () => {
         chrome.alarms.create('moodCheck', { periodInMinutes: Number(intervalMin) })

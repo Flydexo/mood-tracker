@@ -1,52 +1,70 @@
 /* eslint-disable prettier/prettier */
 /// <reference path="../manifest.d.ts" />
 
-import type { ExtractBody, ExtractQuery, ExtractQueryForGet, ExtractResponse } from '@tuyau/core/types'
-import type { InferInput } from '@vinejs/vine/types'
+import type { ExtractBody, ExtractErrorResponse, ExtractQuery, ExtractQueryForGet, ExtractResponse } from '@tuyau/core/types'
+import type { InferInput, SimpleError } from '@vinejs/vine/types'
+
+export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
-  'auth.new_account.store': {
+  'mood_logs.batch': {
     methods: ["POST"]
-    pattern: '/api/v1/auth/signup'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user').signupValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/user').signupValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/new_account_controller').default['store']>>>
-    }
-  }
-  'auth.access_token.store': {
-    methods: ["POST"]
-    pattern: '/api/v1/auth/login'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user').loginValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/user').loginValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/access_token_controller').default['store']>>>
-    }
-  }
-  'auth.access_token.destroy': {
-    methods: ["POST"]
-    pattern: '/api/v1/auth/logout'
+    pattern: '/api/mood-logs/batch'
     types: {
       body: {}
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/access_token_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/mood_logs_controller').default['batch']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mood_logs_controller').default['batch']>>>
     }
   }
-  'profile.profile.show': {
+  'website_visits.batch': {
+    methods: ["POST"]
+    pattern: '/api/website-visits/batch'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/website_visits_controller').default['batch']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/website_visits_controller').default['batch']>>>
+    }
+  }
+  'stats.summary': {
     methods: ["GET","HEAD"]
-    pattern: '/api/v1/account/profile'
+    pattern: '/api/stats/summary'
     types: {
       body: {}
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/profile_controller').default['show']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/stats_controller').default['summary']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/stats_controller').default['summary']>>>
+    }
+  }
+  'stats.hourly': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/stats/hourly'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/stats_controller').default['hourly']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/stats_controller').default['hourly']>>>
+    }
+  }
+  'stats.domain': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/stats/domain/:domain'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { domain: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/stats_controller').default['domain']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/stats_controller').default['domain']>>>
     }
   }
 }

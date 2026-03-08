@@ -137,7 +137,7 @@ export default function Dashboard({ onNavigate }) {
   const [selectedDomain, setSelectedDomain] = useState(null)
 
   const { from, to } = getDateRange(period)
-  const { summary, hourly, loading, error, hasServer } = useStats(from, to, period)
+  const { summary, hourly, loading, error, hasServer, reload } = useStats(from, to, period)
 
   if (!hasServer) {
     return <NoServerState onGoSettings={() => onNavigate?.('settings')} />
@@ -169,6 +169,18 @@ export default function Dashboard({ onNavigate }) {
         <div className="flex items-center gap-3 flex-wrap">
           {avgMood && <MoodBadge avg={avgMood} />}
           <PeriodSelector value={period} onChange={setPeriod} />
+          <button
+            onClick={reload}
+            disabled={loading}
+            className="px-3 py-1.5 rounded-xl text-sm font-medium"
+            style={{
+              background: loading ? 'var(--peach-100)' : 'var(--surface-base)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border)',
+            }}
+          >
+            {loading ? '...' : '↻'}
+          </button>
         </div>
       </div>
 
