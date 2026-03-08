@@ -78,7 +78,7 @@ export default class StatsController {
     const { from, to } = await request.validateUsing(hourlyValidator)
 
     // Mood averaged by hour-of-day
-    const moodByHour = await db.rawQuery<{ hour: string; avg_mood: string }[]>(
+    const moodByHour = await db.rawQuery<{ rows: { hour: string; avg_mood: string }[] }>(
       `SELECT EXTRACT(HOUR FROM timestamp AT TIME ZONE 'UTC')::int AS hour,
               AVG(mood) AS avg_mood
        FROM mood_logs
@@ -89,7 +89,7 @@ export default class StatsController {
     )
 
     // Active duration averaged by hour-of-day
-    const usageByHour = await db.rawQuery<{ hour: string; avg_active: string; avg_media: string }[]>(
+    const usageByHour = await db.rawQuery<{ rows: { hour: string; avg_active: string; avg_media: string }[] }>(
       `SELECT EXTRACT(HOUR FROM start_time AT TIME ZONE 'UTC')::int AS hour,
               AVG(active_duration) AS avg_active,
               AVG(audio_video_duration) AS avg_media
@@ -130,7 +130,7 @@ export default class StatsController {
     const { from, to } = await request.validateUsing(dateRangeValidator)
     const { domain } = params
 
-    const rows = await db.rawQuery<{ hour: string; total_active: string; total_media: string }[]>(
+    const rows = await db.rawQuery<{ rows: { hour: string; total_active: string; total_media: string }[] }>(
       `SELECT EXTRACT(HOUR FROM start_time AT TIME ZONE 'UTC')::int AS hour,
               AVG(active_duration) AS total_active,
               AVG(audio_video_duration) AS total_media
