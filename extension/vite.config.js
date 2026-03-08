@@ -9,12 +9,11 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    // Copy background service worker and manifest as-is (no bundling)
+    // Copy manifest as-is; background.js is bundled via rollupOptions below
     {
       name: 'copy-extension-files',
       closeBundle() {
         mkdirSync('dist', { recursive: true })
-        copyFileSync('src/background/index.js', 'dist/background.js')
         copyFileSync('public/manifest.json', 'dist/manifest.json')
       },
     },
@@ -23,7 +22,19 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: {
-        dashboard: resolve(__dirname, 'public/dashboard.html'),
+        // Dashboard React app (at root so Vite outputs dist/dashboard.html)
+        dashboard: resolve(__dirname, 'dashboard.html'),
+        // Background service worker — bundled as ES module
+        background: resolve(__dirname, 'src/background/index.js'),
+      },
+      output: {
+        // Place the background bundle at dist/background.js (no hash)
+        entryFileNames: (chunk) => {
+          if (chunk.name === 'background') return 'background.js'
+          return 'assets/[name]-[hash].js'
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
       },
     },
   },
