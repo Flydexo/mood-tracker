@@ -1,4 +1,4 @@
-FROM node:22.16.0-alpine3.22 AS base
+FROM node:24-alpine AS base
 
 # ─── Stage 1: All dependencies (dev + prod) ───────────────────────────────────
 FROM base AS deps
@@ -17,7 +17,7 @@ FROM base AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 ADD . .
-RUN node ace.js build --no-assets
+RUN node ace.js build
 
 # ─── Stage 4: Production image ────────────────────────────────────────────────
 FROM base AS production
