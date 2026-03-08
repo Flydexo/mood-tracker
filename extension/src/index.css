@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/* CSS custom properties for easy theme swapping */
+:root {
+  --peach-50: #FFF8F5;
+  --peach-100: #FFE9DC;
+  --peach-200: #FFD9C0;
+  --peach-300: #FFC9A3;
+  --peach-400: #FFB387;
+  --peach-500: #FF9D6B;
+  --peach-600: #F07840;
+  --mint: #D4F0E6;
+  --lavender: #E8DFF5;
+  --cream: #FFF9F0;
+  --rose: #FFE0E6;
+  --sky: #DFF0FF;
+  --text-primary: #3D2B1F;
+  --text-secondary: #7A5C4F;
+  --text-muted: #B09A90;
+  --surface-base: #FFFAF7;
+  --surface-card: #FFFFFF;
+  --surface-hover: #FFF0E8;
+  --border: #F0DDD4;
+}
+
+@theme {
+  --color-peach-50: var(--peach-50);
+  --color-peach-100: var(--peach-100);
+  --color-peach-200: var(--peach-200);
+  --color-peach-300: var(--peach-300);
+  --color-peach-400: var(--peach-400);
+  --color-peach-500: var(--peach-500);
+  --color-peach-600: var(--peach-600);
+  --color-mint: var(--mint);
+  --color-lavender: var(--lavender);
+  --color-cream: var(--cream);
+  --color-rose: var(--rose);
+  --color-sky: var(--sky);
+  --color-surface-base: var(--surface-base);
+  --color-surface-card: var(--surface-card);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --font-sans: 'Inter', 'system-ui', sans-serif;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth transitions for interactive elements */
+button, a {
+  transition: all 0.15s ease;
+}
+
+/* Recharts tooltip styling */
+.recharts-tooltip-wrapper {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.recharts-default-tooltip {
+  background: white !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px rgba(61, 43, 31, 0.08) !important;
+}
