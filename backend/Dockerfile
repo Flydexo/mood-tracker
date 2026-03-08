@@ -17,7 +17,7 @@ FROM base AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 ADD . .
-RUN node ace build --no-assets
+RUN node ace.js build --no-assets
 
 # ─── Stage 4: Production image ────────────────────────────────────────────────
 FROM base AS production
