@@ -1,0 +1,35 @@
+# Environment files - NEVER commit these
+.env
+.env.local
+.env.production
+.env.development
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# AdonisJS
+tmp/*
+!tmp/.gitkeep
+generated/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+.fleet/
+
+# Extension build
+extension/dist/
